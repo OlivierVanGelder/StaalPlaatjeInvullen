@@ -1,0 +1,13 @@
+{
+  "name": "image-batch-render",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node process-batch.js"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "p-limit": "^6.0.0",
+    "sharp": "^0.33.5"
+  }
+}
