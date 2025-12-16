@@ -53,10 +53,17 @@ async function zipDir(sourceDir, zipPath) {
 async function main() {
   const batchPath = process.env.BATCH_JSON_PATH || path.join(__dirname, "batch.json");
   const raw = fs.readFileSync(batchPath, "utf8");
-  const batch = JSON.parse(raw);
+  const parsed = JSON.parse(raw);
 
-  if (!Array.isArray(batch.items) || batch.items.length === 0) {
-    throw new Error("batch.items ontbreekt of is leeg");
+  // We verwachten dat batch.json direct een array is: [ {...}, {...} ]
+  // Maar we accepteren ook { items: [...] } of { batch_json: "[...]" } voor de zekerheid.
+  const items =
+    Array.isArray(parsed) ? parsed :
+    (Array.isArray(parsed?.items) ? parsed.items :
+    (typeof parsed?.batch_json === "string" ? JSON.parse(parsed.batch_json) : null));
+
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error("Geen items gevonden. Verwacht een array, of een object met items, of batch_json.");
   }
 
   const templateBuf = fs.readFileSync(TEMPLATE_PATH);
@@ -67,12 +74,15 @@ async function main() {
   const limit = pLimit(CONCURRENCY);
 
   await Promise.all(
-    batch.items.map((item, idx) =>
+    items.map((item, idx) =>
       limit(async () => {
-        const { imageUrl, outputName } = item;
+        const { imageUrl, outputName, colorName } = item;
 
         if (!imageUrl) throw new Error(`item ${idx} mist imageUrl`);
-        const safeName = (outputName || `output_${idx + 1}`).replace(/[^a-zA-Z0-9._-]/g, "_");
+
+        // Als je liever colorName gebruikt als bestandsnaam, dan pakt hij die.
+        const nameCandidate = outputName || colorName || `output_${idx + 1}`;
+        const safeName = String(nameCandidate).replace(/[^a-zA-Z0-9._-]/g, "_");
 
         const imgBuf = await fetchBuffer(imageUrl);
 
@@ -99,6 +109,7 @@ async function main() {
   await zipDir(OUTPUT_DIR, OUTPUT_ZIP);
   console.log(`Klaar. Zip: ${OUTPUT_ZIP}`);
 }
+
 
 main().catch((err) => {
   console.error(err);
