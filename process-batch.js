@@ -11,9 +11,9 @@ const __dirname = path.dirname(__filename);
 const TEMPLATE_PATH = path.join(__dirname, "template.png");
 
 // Vaste plek van het vierkant in template.png
-const SQUARE_LEFT = 200;   // x
-const SQUARE_TOP = 150;    // y
-const SQUARE_SIZE = 600;   // breedte en hoogte
+const SQUARE_LEFT = 225;   // x
+const SQUARE_TOP = 493;    // y
+const SQUARE_SIZE = 520;   // breedte en hoogte
 
 // Output
 const OUTPUT_DIR = path.join(__dirname, "out");
