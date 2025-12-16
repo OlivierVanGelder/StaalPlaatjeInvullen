@@ -12,8 +12,20 @@ const TEMPLATE_PATH = path.join(__dirname, "template.png");
 
 // Vaste plek van het vierkant in template.png
 const SQUARE_LEFT = 225;   // x
-const SQUARE_TOP = 493;    // y
+const SQUARE_TOP = 473;    // y
 const SQUARE_SIZE = 520;   // breedte en hoogte
+// Tekst instellingen
+const TEXT_LEFT = 163;      // x positie van de tekstlaag
+const TEXT_TOP = 387;      // y positie van de tekstlaag
+const TEXT_WIDTH = 450;    // breedte van het tekstvak
+const TEXT_HEIGHT = 50;    // hoogte van het tekstvak
+
+const TEXT_FONT_FAMILY = "Montserrat";
+const TEXT_FONT_WEIGHT = 600; // SemiBold
+const TEXT_SIZE = 41;
+const TEXT_COLOR = "#252422";
+const TEXT_ALIGN = "left";
+
 
 // Output
 const OUTPUT_DIR = path.join(__dirname, "out");
@@ -49,6 +61,52 @@ async function zipDir(sourceDir, zipPath) {
     archive.finalize();
   });
 }
+function escapeXml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+const FONT_PATH = path.join(__dirname, "fonts", "Montserrat-SemiBold.ttf");
+const FONT_BASE64 = fs.readFileSync(FONT_PATH).toString("base64");
+
+function makeTextSvg(text) {
+  const safe = escapeXml(text);
+
+  const anchor = TEXT_ALIGN === "center" ? "middle" : TEXT_ALIGN === "right" ? "end" : "start";
+  const x = TEXT_ALIGN === "center" ? "50%" : TEXT_ALIGN === "right" ? "100%" : "0";
+
+  return Buffer.from(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${TEXT_WIDTH}" height="${TEXT_HEIGHT}">
+      <style>
+        @font-face {
+          font-family: '${TEXT_FONT_FAMILY}';
+          src: url('data:font/ttf;base64,${FONT_BASE64}') format('truetype');
+          font-weight: ${TEXT_FONT_WEIGHT};
+          font-style: normal;
+        }
+        .t {
+          font-family: '${TEXT_FONT_FAMILY}';
+          font-weight: ${TEXT_FONT_WEIGHT};
+          font-size: ${TEXT_SIZE}px;
+          fill: ${TEXT_COLOR};
+        }
+      </style>
+
+      <text
+        x="${x}"
+        y="50%"
+        text-anchor="${anchor}"
+        dominant-baseline="middle"
+        class="t"
+      >${safe}</text>
+    </svg>
+  `);
+}
+
 
 async function main() {
   const batchPath = process.env.BATCH_JSON_PATH || path.join(__dirname, "batch.json");
@@ -90,8 +148,12 @@ async function main() {
           .resize(SQUARE_SIZE, SQUARE_SIZE, { fit: "cover", position: "centre" })
           .toBuffer();
 
+        const label = item.colorName || item.outputName || `kleur_${idx + 1}`;
+        const labelSvg = makeTextSvg(label);
+
         let base = sharp(templateBuf).composite([
-          { input: square, left: SQUARE_LEFT, top: SQUARE_TOP }
+          { input: square, left: SQUARE_LEFT, top: SQUARE_TOP },
+          { input: labelSvg, left: TEXT_LEFT, top: TEXT_TOP }
         ]);
 
         if (OUTPUT_FORMAT === "png") {
