@@ -15,10 +15,10 @@ const SQUARE_LEFT = 225;   // x
 const SQUARE_TOP = 473;    // y
 const SQUARE_SIZE = 520;   // breedte en hoogte
 // Tekst instellingen
-const TEXT_LEFT = 163;      // x positie van de tekstlaag
-const TEXT_TOP = 387;      // y positie van de tekstlaag
+const TEXT_LEFT = 260;      // x positie van de tekstlaag
+const TEXT_TOP = 420;      // y positie van de tekstlaag
 const TEXT_WIDTH = 450;    // breedte van het tekstvak
-const TEXT_HEIGHT = 50;    // hoogte van het tekstvak
+const TEXT_HEIGHT = 70;    // hoogte van het tekstvak
 
 const TEXT_FONT_FAMILY = "Montserrat";
 const TEXT_FONT_WEIGHT = 600; // SemiBold
