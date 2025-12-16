@@ -16,11 +16,11 @@ const SQUARE_TOP = 473;    // y
 const SQUARE_SIZE = 520;   // breedte en hoogte
 // Tekst instellingen
 const TEXT_LEFT = 260;      // x positie van de tekstlaag
-const TEXT_TOP = 420;      // y positie van de tekstlaag
+const TEXT_TOP = 410;      // y positie van de tekstlaag
 const TEXT_WIDTH = 450;    // breedte van het tekstvak
 const TEXT_HEIGHT = 70;    // hoogte van het tekstvak
 
-const TEXT_FONT_FAMILY = "Montserrat";
+const TEXT_FONT_FAMILY = "Montserrat-SemiBold";
 const TEXT_FONT_WEIGHT = 600; // SemiBold
 const TEXT_SIZE = 41;
 const TEXT_COLOR = "#252422";
@@ -30,7 +30,7 @@ const TEXT_ALIGN = "left";
 // Output
 const OUTPUT_DIR = path.join(__dirname, "out");
 const OUTPUT_ZIP = path.join(__dirname, "out.zip");
-const OUTPUT_FORMAT = "jpg"; // "jpg" of "png"
+const OUTPUT_FORMAT = "png"; // "jpg" of "png"
 const JPG_QUALITY = 90;
 
 // Interne parallelisatie, veilig op GitHub runner
