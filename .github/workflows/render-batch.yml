@@ -22,6 +22,12 @@ jobs:
       - name: Install
         run: npm install
 
+      - name: Install Montserrat font
+        run: |
+          mkdir -p ~/.local/share/fonts
+          cp fonts/Montserrat-SemiBold.ttf ~/.local/share/fonts/
+          fc-cache -f -v
+
       - name: Write batch.json
         run: |
           cat > batch.json << 'JSON'

@@ -70,7 +70,6 @@ function escapeXml(text) {
 }
 
 const FONT_PATH = path.join(__dirname, "fonts", "Montserrat-SemiBold.ttf");
-const FONT_BASE64 = fs.readFileSync(FONT_PATH).toString("base64");
 
 if (!fs.existsSync(FONT_PATH)) {
   throw new Error(`Fontbestand niet gevonden: ${FONT_PATH}`);
@@ -84,32 +83,20 @@ function makeTextSvg(text) {
   const x = TEXT_ALIGN === "center" ? "50%" : TEXT_ALIGN === "right" ? "100%" : "0";
 
   return Buffer.from(`
-  <svg xmlns="http://www.w3.org/2000/svg" width="${TEXT_WIDTH}" height="${TEXT_HEIGHT}">
-    <style>
-      @font-face {
-        font-family: '${TEXT_FONT_FAMILY}';
-        src: url('data:font/ttf;base64,${FONT_BASE64}') format('truetype');
-        font-weight: ${TEXT_FONT_WEIGHT};
-        font-style: normal;
-      }
-      .t {
-        font-family: '${TEXT_FONT_FAMILY}';
-        font-weight: ${TEXT_FONT_WEIGHT};
-        font-size: ${TEXT_SIZE}px;
-        fill: ${TEXT_COLOR};
-      }
-    </style>
-
-    <text
-      x="${x}"
-      y="50%"
-      text-anchor="${anchor}"
-      dominant-baseline="middle"
-      class="t"
-    >${safe}</text>
-  </svg>
-`);
+    <svg xmlns="http://www.w3.org/2000/svg" width="${TEXT_WIDTH}" height="${TEXT_HEIGHT}">
+      <style>
+        .t {
+          font-family: '${TEXT_FONT_FAMILY}';
+          font-weight: ${TEXT_FONT_WEIGHT};
+          font-size: ${TEXT_SIZE}px;
+          fill: ${TEXT_COLOR};
+        }
+      </style>
+      <text x="${x}" y="50%" text-anchor="${anchor}" dominant-baseline="middle" class="t">${safe}</text>
+    </svg>
+  `);
 }
+
 
 
 async function main() {
