@@ -16,16 +16,15 @@ const SQUARE_TOP = 473;    // y
 const SQUARE_SIZE = 520;   // breedte en hoogte
 // Tekst instellingen
 const TEXT_LEFT = 260;      // x positie van de tekstlaag
-const TEXT_TOP = 410;      // y positie van de tekstlaag
+const TEXT_TOP = 400;      // y positie van de tekstlaag
 const TEXT_WIDTH = 450;    // breedte van het tekstvak
 const TEXT_HEIGHT = 70;    // hoogte van het tekstvak
 
-const TEXT_FONT_FAMILY = "Montserrat-SemiBold";
+const TEXT_FONT_FAMILY = "Montserrat";
 const TEXT_FONT_WEIGHT = 600; // SemiBold
 const TEXT_SIZE = 41;
 const TEXT_COLOR = "#252422";
 const TEXT_ALIGN = "left";
-
 
 // Output
 const OUTPUT_DIR = path.join(__dirname, "out");
@@ -73,6 +72,11 @@ function escapeXml(text) {
 const FONT_PATH = path.join(__dirname, "fonts", "Montserrat-SemiBold.ttf");
 const FONT_BASE64 = fs.readFileSync(FONT_PATH).toString("base64");
 
+if (!fs.existsSync(FONT_PATH)) {
+  throw new Error(`Fontbestand niet gevonden: ${FONT_PATH}`);
+}
+
+
 function makeTextSvg(text) {
   const safe = escapeXml(text);
 
@@ -80,31 +84,31 @@ function makeTextSvg(text) {
   const x = TEXT_ALIGN === "center" ? "50%" : TEXT_ALIGN === "right" ? "100%" : "0";
 
   return Buffer.from(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="${TEXT_WIDTH}" height="${TEXT_HEIGHT}">
-      <style>
-        @font-face {
-          font-family: '${TEXT_FONT_FAMILY}';
-          src: url('data:font/ttf;base64,${FONT_BASE64}') format('truetype');
-          font-weight: ${TEXT_FONT_WEIGHT};
-          font-style: normal;
-        }
-        .t {
-          font-family: '${TEXT_FONT_FAMILY}';
-          font-weight: ${TEXT_FONT_WEIGHT};
-          font-size: ${TEXT_SIZE}px;
-          fill: ${TEXT_COLOR};
-        }
-      </style>
+  <svg xmlns="http://www.w3.org/2000/svg" width="${TEXT_WIDTH}" height="${TEXT_HEIGHT}">
+    <style>
+      @font-face {
+        font-family: '${TEXT_FONT_FAMILY}';
+        src: url('data:font/ttf;base64,${FONT_BASE64}') format('truetype');
+        font-weight: ${TEXT_FONT_WEIGHT};
+        font-style: normal;
+      }
+      .t {
+        font-family: '${TEXT_FONT_FAMILY}';
+        font-weight: ${TEXT_FONT_WEIGHT};
+        font-size: ${TEXT_SIZE}px;
+        fill: ${TEXT_COLOR};
+      }
+    </style>
 
-      <text
-        x="${x}"
-        y="50%"
-        text-anchor="${anchor}"
-        dominant-baseline="middle"
-        class="t"
-      >${safe}</text>
-    </svg>
-  `);
+    <text
+      x="${x}"
+      y="50%"
+      text-anchor="${anchor}"
+      dominant-baseline="middle"
+      class="t"
+    >${safe}</text>
+  </svg>
+`);
 }
 
 
