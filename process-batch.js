@@ -11,12 +11,12 @@ const __dirname = path.dirname(__filename);
 const TEMPLATE_PATH = path.join(__dirname, "template.png");
 
 // Vaste plek van het vierkant in template.png
-const SQUARE_LEFT = 225;   // x
+const SQUARE_LEFT = 245;   // x
 const SQUARE_TOP = 473;    // y
 const SQUARE_SIZE = 520;   // breedte en hoogte
 // Tekst instellingen
-const TEXT_LEFT = 260;      // x positie van de tekstlaag
-const TEXT_TOP = 400;      // y positie van de tekstlaag
+const TEXT_LEFT = 280;      // x positie van de tekstlaag
+const TEXT_TOP = 390;      // y positie van de tekstlaag
 const TEXT_WIDTH = 450;    // breedte van het tekstvak
 const TEXT_HEIGHT = 70;    // hoogte van het tekstvak
 
@@ -75,6 +75,10 @@ if (!fs.existsSync(FONT_PATH)) {
   throw new Error(`Fontbestand niet gevonden: ${FONT_PATH}`);
 }
 
+function capitalizeFirstLetter(text) {
+  if (!text) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 function makeTextSvg(text) {
   const safe = escapeXml(text);
@@ -139,8 +143,10 @@ async function main() {
           .resize(SQUARE_SIZE, SQUARE_SIZE, { fit: "cover", position: "centre" })
           .toBuffer();
 
-        const label = item.colorName || item.outputName || `kleur_${idx + 1}`;
+        const rawLabel = item.colorName || item.outputName || `kleur_${idx + 1}`;
+        const label = capitalizeFirstLetter(rawLabel);
         const labelSvg = makeTextSvg(label);
+
 
         let base = sharp(templateBuf).composite([
           { input: square, left: SQUARE_LEFT, top: SQUARE_TOP },
